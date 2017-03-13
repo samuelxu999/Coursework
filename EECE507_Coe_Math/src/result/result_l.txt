@@ -1,0 +1,16 @@
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A text_sample_A.txt:-360.6722571656566
+./classify_naive_bayes_text.tcl tmp_learnt_B text_sample_A.txt:-447.06523795424863
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A text_sample_B.txt:-401.189691953735
+./classify_naive_bayes_text.tcl tmp_learnt_B text_sample_B.txt:-402.6567494823666
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A test_alice.txt:-11383.575457622812
+./classify_naive_bayes_text.tcl tmp_learnt_B test_alice.txt:-14296.36759432081
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A test_bwest.txt:-1140.1733006223956
+./classify_naive_bayes_text.tcl tmp_learnt_B test_bwest.txt:-1170.6209150250058
+Alice

@@ -1,0 +1,40 @@
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A1:-606.9945361779062
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A1:-644.3570641611293
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A2:-594.431213415979
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A2:-614.1719525801274
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A3:-556.886041236848
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A3:-563.1406185158348
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A4:-487.30718419323307
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A4:-532.994816716683
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A5:-243.4463613504387
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A5:-277.86947517132876
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A6:-550.5516188773763
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A6:-615.610588748704
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A7:-82.57298809462141
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A7:-94.0440933147986
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A8:-410.09143673318374
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A8:-445.03530206636526
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A9:-127.89562517969645
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A9:-140.1425969596551
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_A10:-256.09743994957716
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_A10:-274.6334495799874
+Alice

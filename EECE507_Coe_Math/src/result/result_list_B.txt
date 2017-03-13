@@ -1,0 +1,40 @@
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B1:-132.72306580716042
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B1:-130.17440070634183
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B2:-300.8812843726832
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B2:-292.5736740299471
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B3:-757.9371939942123
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B3:-720.8099787871475
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B4:-1401.4326466295047
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B4:-1365.2551854800558
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B5:-580.0457999564613
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B5:-573.627465221797
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B6:-1149.4669494030488
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B6:-1113.1891895130334
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B7:-347.6403559530775
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B7:-348.14291224790844
+Alice
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B8:-246.40946943721352
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B8:-239.39400500905535
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B9:-456.6738257043772
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B9:-439.9568386709059
+Bob
+-----------------------------------------------------------------
+./classify_naive_bayes_text.tcl tmp_learnt_A ./sample/sample_B10:-508.2913010619969
+./classify_naive_bayes_text.tcl tmp_learnt_B ./sample/sample_B10:-475.734462776701
+Bob

@@ -1,0 +1,45 @@
+
+============= Starting tier 1 =============
+-------------------- Winners Bracket ----------------------
+Playing scissors against random ...
+  scissors score is 29, random score is 23 ...scissors Won!!!!
+Playing paper against rock ...
+  paper score is 50, rock score is 0 ...paper Won!!!!
+  Player rxu22 got a bye into the next tier
+============= Finished tier 1 =============
+
+============= Starting tier 2 =============
+-------------------- Winners Bracket ----------------------
+Playing paper against scissors ...
+  paper score is 0, scissors score is 50 ...scissors Won!!!
+  Player rxu22 got a bye into the next tier
+--------------------- Losers Bracket ------------------------------
+Playing random against rock ...
+  random score is 26, rock score is 29 ...rock Won!!!
+Eliminating random after two losses
+============= Finished tier 2 =============
+
+============= Starting tier 3 =============
+-------------------- Winners Bracket ----------------------
+Playing scissors against rxu22 ...
+  scissors score is 0, rxu22 score is 50 ...rxu22 Won!!!
+--------------------- Losers Bracket ------------------------------
+Playing paper against rock ...
+  paper score is 50, rock score is 0 ...paper Won!!!!
+Eliminating rock after two losses
+============= Finished tier 3 =============
+
+============= Starting tier 4 =============
+-------------------- Winners Bracket ----------------------
+  Player rxu22 got a bye into the next tier
+--------------------- Losers Bracket ------------------------------
+Playing paper against scissors ...
+  paper score is 0, scissors score is 50 ...scissors Won!!!
+Eliminating paper after two losses
+============= Finished tier 4 =============
+
+========== Championship Match! ==============
+Playing rxu22 against scissors ...
+  rxu22 score is 50, scissors score is 0 ...rxu22 Won!!!!
+
+Winner and unbeaten champion: rxu22!!!

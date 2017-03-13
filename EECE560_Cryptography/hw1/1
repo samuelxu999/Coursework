@@ -1,0 +1,5 @@
+#!/usr/bin/tclsh
+
+set data [ exec head -10 [ read stdin ] | od -v -t x1 ] 
+
+puts $data

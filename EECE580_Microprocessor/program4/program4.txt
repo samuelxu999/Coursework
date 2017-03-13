@@ -1,0 +1,6 @@
+Using the attached LCD driver, write a program that turns the 3Pi display into a hex stopwatch.  
+The left button functions as a start, the right as stop, and the middle as clear/lap (in stop mode, the middle clears the time; 
+in stop mode, it freezes the display but the counter keeps counting in the background).  
+The display should show the seconds and milliseconds, in hex, separated by colons.  
+Seconds should count modulo-60 and milliseconds modulo-1000.  
+Create an interrupt-based driver using a timer module to obtain 1ms timing update of the counter.

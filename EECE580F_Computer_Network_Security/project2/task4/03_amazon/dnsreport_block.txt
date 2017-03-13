@@ -1,0 +1,17 @@
+www.amazon.com:2 Time:2017-03-03 21:43:01.724
+www.amazon.com
+d2o307dm5mqftz.cloudfront.net
+
+www.amazon.com:2 Time:2017-03-03 21:43:03.657
+www.amazon.com
+s.amazon-adsystem.com
+
+www.amazon.com:1 Time:2017-03-03 21:43:07.571
+www.amazon.com
+
+www.amazon.com:1 Time:2017-03-03 21:43:12.862
+www.amazon.com
+
+www.amazon.com:1 Time:2017-03-03 21:43:18.144
+www.amazon.com
+

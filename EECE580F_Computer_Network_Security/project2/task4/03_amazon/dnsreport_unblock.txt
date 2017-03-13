@@ -1,0 +1,56 @@
+www.amazon.com:8 Time:2017-03-03 21:33:28.903
+www.amazon.com
+images-na.ssl-images-amazon.com
+fls-na.amazon.com
+aax-us-east.amazon-adsystem.com
+m.media-amazon.com
+dq4ijymydgrfx.cloudfront.net
+dew9ckzjyt2gn.cloudfront.net
+d2o307dm5mqftz.cloudfront.net
+
+www.amazon.com:1 Time:2017-03-03 21:33:31.119
+www.amazon.com
+
+www.amazon.com:23 Time:2017-03-03 21:33:33.546
+www.amazon.com
+s.amazon-adsystem.com
+bh.contextweb.com
+sync.search.spotxchange.com
+usermatch.krxd.net
+cm.g.doubleclick.net
+x.bidswitch.net
+us-u.openx.net
+ssum-sec.casalemedia.com
+ums.adtechus.com
+ib.adnxs.com
+token.rubiconproject.com
+geo-um.btrll.com
+www.facebook.com
+sync.adaptv.advertising.com
+analytics.twitter.com
+ads.yahoo.com
+image5.pubmatic.com
+sync.ipredictive.com
+gt.symcd.com
+ocsp.godaddy.com
+ocsp.comodoca.com
+gn.symcd.com
+
+www.amazon.com:4 Time:2017-03-03 21:33:36.565
+www.amazon.com
+ocsp.entrust.net
+ocsp.digicert.com
+ss.symcd.com
+
+www.amazon.com:1 Time:2017-03-03 21:33:41.501
+www.amazon.com
+
+www.amazon.com:1 Time:2017-03-03 21:33:46.775
+www.amazon.com
+
+www.amazon.com:1 Time:2017-03-03 21:33:52.061
+www.amazon.com
+
+www.amazon.com:1 Time:2017-03-03 21:33:57.342
+www.amazon.com
+

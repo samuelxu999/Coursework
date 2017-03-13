@@ -1,0 +1,17 @@
+www.morganstanley.com:15 Time:2017-03-03 22:40:42.059
+www.morganstanley.com
+assets.adobedtm.com
+sadmin.brightcove.com
+players.brightcove.net
+morganstanleyandco.tt.omtrdc.net
+2168002.fls.doubleclick.net
+metrics.morganstanley.com
+fast.morganstanley.demdex.net
+www.morganstanleyclientserv.com
+www.stockplanconnect.com
+matrix.ms.com
+ms.taleo.net
+brokercheck.finra.org
+debian.localdomain
+debian
+

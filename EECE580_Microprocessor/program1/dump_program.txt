@@ -1,0 +1,80 @@
+
+program1:     file format elf32-avr
+
+
+Disassembly of section .text:
+
+00000000 <.text>:
+   0:	0c 94 34 00 	jmp	0x68	;  0x68
+   4:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+   8:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+   c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  10:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  14:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  18:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  1c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  20:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  24:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  28:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  2c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  30:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  34:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  38:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  3c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  40:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  44:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  48:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  4c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  50:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  54:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  58:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  5c:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  60:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  64:	0c 94 3e 00 	jmp	0x7c	;  0x7c
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+  74:	0e 94 40 00 	call	0x80	;  0x80
+  78:	0c 94 64 00 	jmp	0xc8	;  0xc8
+  7c:	0c 94 00 00 	jmp	0	;  0x0
+  80:	8a b1       	in	r24, 0x0a	; 10
+  82:	82 68       	ori	r24, 0x82	; 130
+  84:	8a b9       	out	0x0a, r24	; 10
+  86:	84 b1       	in	r24, 0x04	; 4
+  88:	8d 7c       	andi	r24, 0xCD	; 205
+  8a:	84 b9       	out	0x04, r24	; 4
+  8c:	85 b1       	in	r24, 0x05	; 5
+  8e:	82 63       	ori	r24, 0x32	; 50
+  90:	85 b9       	out	0x05, r24	; 5
+  92:	59 9a       	sbi	0x0b, 1	; 11
+  94:	5f 9a       	sbi	0x0b, 7	; 11
+  96:	92 e0       	ldi	r25, 0x02	; 2
+  98:	19 99       	sbic	0x03, 1	; 3
+  9a:	03 c0       	rjmp	.+6      	;  0xa2
+  9c:	8b b1       	in	r24, 0x0b	; 11
+  9e:	89 27       	eor	r24, r25
+  a0:	8b b9       	out	0x0b, r24	; 11
+  a2:	1d 99       	sbic	0x03, 5	; 3
+  a4:	03 c0       	rjmp	.+6      	;  0xac
+  a6:	8b b1       	in	r24, 0x0b	; 11
+  a8:	80 58       	subi	r24, 0x80	; 128
+  aa:	8b b9       	out	0x0b, r24	; 11
+  ac:	1c 99       	sbic	0x03, 4	; 3
+  ae:	02 c0       	rjmp	.+4      	;  0xb4
+  b0:	59 98       	cbi	0x0b, 1	; 11
+  b2:	5f 98       	cbi	0x0b, 7	; 11
+  b4:	2f e3       	ldi	r18, 0x3F	; 63
+  b6:	32 e4       	ldi	r19, 0x42	; 66
+  b8:	8f e0       	ldi	r24, 0x0F	; 15
+  ba:	21 50       	subi	r18, 0x01	; 1
+  bc:	30 40       	sbci	r19, 0x00	; 0
+  be:	80 40       	sbci	r24, 0x00	; 0
+  c0:	e1 f7       	brne	.-8      	;  0xba
+  c2:	00 c0       	rjmp	.+0      	;  0xc4
+  c4:	00 00       	nop
+  c6:	e8 cf       	rjmp	.-48     	;  0x98
+  c8:	f8 94       	cli
+  ca:	ff cf       	rjmp	.-2      	;  0xca

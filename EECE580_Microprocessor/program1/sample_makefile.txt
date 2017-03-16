@@ -1,0 +1,32 @@
+"make"  controls the generation of executable files from source files and can automate other tasks such as programming the microcontroller firmware or starting a debugging session.  Make uses "recipe" files, typically named Makefile, that contain targets to be compiled (or processed), dependencies upon which the target depends, and a recipe for processing the target to build the program. 
+
+The contents below show an example Makefile.  Running "make" in the directory containing this file will process the default target, default, which has a dependency of test.  Make will then process test, which has dependences that include test.c, motor_driver.o and button_driver.o.  In turn, make attempts to build each of these targets, which may trigger others to be built.    
+
+#Example Makefile
+
+F_CPU = 20000000
+MCU = atmega328p
+CCOPTS= -g -Wall -Os -std=c99
+
+default: test
+
+all: program
+
+button_driver.o: button_driver.c button_driver.h
+    avr-gcc -c $(CCOPTS) -mmcu=$(MCU) -DF_CPU=$(F_CPU) button_driver.c -o button_driver.o
+
+motor_driver.o: motor_driver.c motor_driver.h
+    avr-gcc -c $(CCOPTS) -mmcu=$(MCU) -DF_CPU=$(F_CPU) motor_driver.c -o motor_driver.o
+
+test: test.c motor_driver.o button_driver.o
+    avr-gcc  $(CCOPTS) -mmcu=$(MCU) -DF_CPU=$(F_CPU) -o test -g test.c motor_driver.o button_driver.o
+
+test.hex: test
+    avr-strip test
+    avr-objcopy -R .eeprom -O ihex test test.hex
+
+program: test.hex
+    avrdude -p m328p -c avrisp2 -P /dev/ttyACM0 -U flash:w:test.hex
+
+clean:
+    rm test test.hex motor_driver.o button_driver.o

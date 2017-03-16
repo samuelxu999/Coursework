@@ -9,4 +9,5 @@ Function:
 	---HW4: permutation
 	---HW5: group
 	---HW6: number theory
+	---sample: sample code provided by Prof
 	---llr_roc: likilyhood ratial test

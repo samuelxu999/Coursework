@@ -12,7 +12,7 @@ Created on April 9, 2017
 import sys
 import re
 import datetime
-import time
+import glob, os
 
 '''
 Function:read line contents from tcpdump file
@@ -51,7 +51,7 @@ def Parselines(ls_line):
 			if ("ARP" in tmp_line):
 				ls_info.append(tmp_line.split(','))
 				continue
-			if ("IP" in tmp_line):
+			if (("IP" in tmp_line) and ("IP6" not in tmp_line)):
 				ls_info.append(tmp_line.split('>'))
 				continue
 	
@@ -284,7 +284,7 @@ def ScanDetect(ls_netflows):
 		ls_scanport=tmp_record[2]
 		ls_scandata=[]
 		if(len(ls_scanport)>5):
-			print(len(ls_scanport))
+			#print(len(ls_scanport))
 			#add scan activity time
 			ls_scandata.append(tmp_record[0])
 			#add scan path scr->des
@@ -295,60 +295,102 @@ def ScanDetect(ls_netflows):
 			#add ls_scandata to ls_scanflows[]
 			ls_scanflows.append(ls_scandata)
 	return ls_scanflows
+
+'''
+Function: Save ls_record[] data as report:filename unter current directory
+@arguments: 
+(in)    ls_record:   	read ls_record[] to parse need information
+(in)    filename:   	set report file name
+'''
+def ExportData(ls_record,filename): 
+	tmp_file = open(filename, "w") 
+	for tmp_record in ls_record:
+		tmp_file.write("%s\n" %(tmp_record))
+	tmp_file.close() 
 	
 '''
-Function: calculate statistic data based on information list
+Function: Display detect result on screen or export as report log unter current directory
 @arguments: 
-(in)    ls_record:   	input line list to parse need information
-(out)   ls_result:   	return information list
+(in)    ls_record:   	read ls_record[] to parse need information
+(in)    filename:   	set report file name
 '''
 def ExportResult(ls_record,filename): 
 	tmp_file = open(filename, "w") 
-	for ls_data in ls_record:
-		tmp_file.write("%s\n" %(ls_data))
-		'''i=0
-		for dns_site in ls_dns:
-			if(i==0):
-				#print("%s:%s Time:%s %s" %(dns_site[2],len(ls_dns),dns_site[0],dns_site[1]))
-				tmp_file.write("%s:%s Time:%s %s\n" %(dns_site[2],len(ls_dns)-1,dns_site[0],dns_site[1]))
-				#print("%s" %(dns_site[2]))
-				#tmp_file.write("%s\n" %(dns_site[2]))
-				i+=1
-				continue
-			#print("%s" %(dns_site))	
-			tmp_file.write("%s\n" %(dns_site))	
+	for ls_logdata in ls_record:
+		#tmp_file.write("%s\n" %(ls_data))
+		#print("%s->" %(ls_logdata[0]))	
+		tmp_file.write("%s->\n" %(ls_logdata[0]))
+		for ls_scan in ls_logdata[1]:
+			'''print("\tScanned from %s to %s, start at:%s, end at:%s" 
+			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))'''
+			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s\n" 
+			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))
 		#print("")
-		tmp_file.write("\n")'''
+		tmp_file.write("\n")
 	tmp_file.close() 
 
+'''
+Function: list all tcpdump*.log files in current directory
+@arguments: 
+(in)    reg_str:   	input regex string to filter files
+(out)   ls_logs:   	return scanlog files
+'''
+def list_scanlog(reg_str):
+	#set current path as default directory
+	os.chdir("./")
+	#reg_str="tcpdump*"
+	ls_logs=[]
+	for file in glob.glob(reg_str):
+		ls_logs.append(file)
+		#print(file)
+	return ls_logs
+	
 '''
 Function: used as main for executing function and export test result
 @arguments: NULL
 '''
 def main(): 
-    #define filename to load test data
-	logname=sys.argv[1]
+    #Check argument validation
+	if(len(sys.argv)<2):
+		print("Usage: %s @regex\nExample:%s tcpdump*.txt" %(sys.argv[0],sys.argv[0]))
+		return -1
+	
+	#define regex_str to filter scanlog files
+	regex_str=sys.argv[1]
+	
 	#logname="tcpdump_sample"
-	reportname="networkreport.txt"
+	#reportname="networkreport.txt"
 	portscan="portscanreport.txt"
 	detectname="detectreport.txt"
-    
-    #========================== print words statistics data ==========================================
-    #read log file and save data as arraylist ls_line
-	ls_line=ReadLines(logname)
-	print("Extract network flow from '%s'." %(logname))
 	
-	#handle line list data and save result as ls_info	
-	ls_info=Parselines(ls_line)
-	ls_netflows=HandleInfo(ls_info)
-	ls_scanflows=ScanDetect(ls_netflows)
+	ls_scandetect=[]
 	
+    #get all scan logs under current directory
+	ls_scanlog=[]
+	ls_scanlog=list_scanlog(regex_str)
+
+    #========================== analyze flowdata by for each log =================================
+	for logname in ls_scanlog:		
+		tmp_scandata=[]
+		#read log file and save data as arraylist ls_line
+		ls_line=ReadLines(logname)
+		print("Extract network flow from '%s'." %(logname))	
+		#handle line list data and save result as ls_scanflows	
+		ls_info=Parselines(ls_line)
+		ls_netflows=HandleInfo(ls_info)
+		ls_scanflows=ScanDetect(ls_netflows)
+		#add logname and ls_scanflows[] to tmp_scandata
+		tmp_scandata.append(logname)
+		tmp_scandata.append(ls_scanflows)
+		ls_scandetect.append(tmp_scandata)
+		
+	#========================== report detect result =================================
 	print("Export network scan detect data to '%s'." %(detectname))
-	ExportResult(ls_scanflows,detectname)
-	ExportResult(ls_netflows,portscan)
-	#Export data and saved as report
-	#ExportResult(ls_info,reportname)
-	#print("Export network monitor data to '%s'." %(reportname))
+	ExportResult(ls_scandetect,detectname)
+	
+	#===========Export data and saved as report===========
+	#ExportData(ls_netflows,portscan)
+	
 	return 0
 
   

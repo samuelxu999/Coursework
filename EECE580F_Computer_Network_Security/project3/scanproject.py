@@ -285,7 +285,8 @@ def ScanDetect(ls_netflows):
 		#check whether scaned port count is beyong normal network activity
 		ls_scanport=tmp_record[2]
 		ls_scandata=[]
-		if(len(ls_scanport)>5):
+		#check scaned port number threshold
+		if(len(ls_scanport)>3):
 			#print(len(ls_scanport))
 			#add scan activity time
 			ls_scandata.append(tmp_record[0])
@@ -293,6 +294,8 @@ def ScanDetect(ls_netflows):
 			ls_scandata.append(tmp_record[1])
 			#add last scan time
 			ls_scandata.append(tmp_record[3])
+			#add scaned port number
+			ls_scandata.append(len(ls_scanport))
 			
 			#add ls_scandata to ls_scanflows[]
 			ls_scanflows.append(ls_scandata)
@@ -325,8 +328,8 @@ def ExportResult(ls_record,filename):
 		for ls_scan in ls_logdata[1]:
 			'''print("\tScanned from %s to %s, start at:%s, end at:%s" 
 			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))'''
-			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s\n" 
-			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))
+			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s ports\n" 
+			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3]))
 		#print("")
 		tmp_file.write("\n")
 	tmp_file.close() 

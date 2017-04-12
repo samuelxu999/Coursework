@@ -200,13 +200,15 @@ def HandleInfo(ls_info):
 			):
 			continue
 		
-		#remove UDP flow by ARP, checking if 'UDP' appear at the first of data section 
-		if("UDP"==tmp_record[6].split(",")[0]):
-			continue
+		#check if 'ICMP' appear at the first of data section, then remove ICMP flow
+		if("ICMP" in tmp_record[6].split(",")[0]):
+			continue	
 		
-		#check if 'Flags=[S]' appear at the first of data section
-		if("Flags"!=tmp_record[6].split(",")[0].split()[0] or "[S]"!=tmp_record[6].split(",")[0].split()[1]):
-			continue
+		#UDP:check if 'UDP' appear at the first of data section. if yes, go ahead to analyze
+		if("UDP"!=tmp_record[6].split(",")[0]):
+			#TCP:check if 'Flags=[S]' appear at the first of data section
+			if("Flags [S]"!=tmp_record[6].split(",")[0]):
+				continue
 		
 		#==================================analyze network flow data=============================================
 		#get current request record time 

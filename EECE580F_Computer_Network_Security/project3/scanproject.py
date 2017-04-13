@@ -16,9 +16,8 @@ import glob, os
 
 '''
 Function:read line contents from tcpdump file
-         create {words:count} dictionary, sum of words
 @arguments: 
-(input)  filepath:   	test file path
+(input)  filepath:   	input file path
 (out)    ls_lines:   	return line list object
 '''
 def ReadLines(filepath):
@@ -37,8 +36,7 @@ Function: split line string and saved record as array list.
 (out)   ls_info:   		return split line data
 '''
 def Parselines(ls_line):
-	#Define regular expressions to parse sentences	
-	#regex = r'([www.google.com])'  
+	#Define ls_info[] to save split data	
 	ls_info=[]
 	
 	# 1.split each line racord into ls_info[]
@@ -48,10 +46,12 @@ def Parselines(ls_line):
 		#remove empty line
 		if(len(tmp_line.split())!=0):
 			ls_data=[]
+			#ARP flow format
 			if ("ARP" in tmp_line):
 				ls_info.append(tmp_line.split(','))
 				continue
-			if (("IP" in tmp_line) and ("IP6" not in tmp_line)):
+			#IP flow format
+			if (("IP" in tmp_line) and ("IP6" not in tmp_line) and (">" in tmp_line)):
 				ls_info.append(tmp_line.split('>'))
 				continue
 	
@@ -104,7 +104,7 @@ def ARP_Parse(ls_record):
 			ls_data.append(tmp_data[4])
 		else:
 			ls_data.append(tmp_data[5])
-		#Request handler
+	#Reply handler
 	if("Reply"==tmp_data[0]):
 		#reply IP
 		ls_data.append(tmp_data[1])
@@ -141,7 +141,7 @@ def IP_Parse(ls_record):
 	ls_data.append(tmp_data[0])
 	#-----------------Type-----------------
 	ls_data.append(tmp_data[1])
-	
+
 	#------------ source IP----------------
 	tmp=tmp_data[2].split(".")
 	src_IP=tmp[0]+"."+tmp[1]+"."+tmp[2]+"."+tmp[3]
@@ -193,29 +193,44 @@ def HandleInfo(ls_info):
 		if("IP"!=tmp_record[1]):
 			continue
 		
-		#remove flows whose Port is netbios-ns or domain
-		if(("netbios-ns"==tmp_record[3]) or ("domain"==tmp_record[3]) or 
-			(""==tmp_record[3]) or ("bootpc"==tmp_record[3]) or
-			("netbios-ns"==tmp_record[5]) or ("domain"==tmp_record[5]) or("bootpc"==tmp_record[5]) 
-			):
+		#remove flows whose port is in following filter
+		if(("netbios-ns"==tmp_record[3]) or ("domain"==tmp_record[3]) or ("bootpc"==tmp_record[3]) or
+			("netbios-ns"==tmp_record[5]) or ("domain"==tmp_record[5]) or("bootpc"==tmp_record[5]) ):
 			continue
 		
 		#check if 'ICMP' appear at the first of data section, then remove ICMP flow
 		if("ICMP" in tmp_record[6].split(",")[0]):
 			continue	
 		
-		#UDP:check if 'UDP' appear at the first of data section. if yes, go ahead to analyze
-		if("UDP"!=tmp_record[6].split(",")[0]):
-			#TCP:check if 'Flags=[S]' appear at the first of data section
-			if("Flags [S]"!=tmp_record[6].split(",")[0]):
-				continue
+		'''
+		IP protocol:check if 'ip-proto' appear at the first of data section. if yes, go ahead to analyze
+		UDP:check if 'UDP' appear at the first of data section. if yes, go ahead to analyze
+		TCP:check if 'Flags [@]' appear at the first of data section. if yes, go ahead to analyze
+			[S]-sS, [F]-sF, [none]-sN, [FPU]-sX
+		'''
+		if("Flags [S]"!=tmp_record[6].split(",")[0] and 
+		"Flags [F]"!=tmp_record[6].split(",")[0] and 
+		"Flags [none]"!=tmp_record[6].split(",")[0] and 
+		"Flags [FPU]"!=tmp_record[6].split(",")[0] and 
+		"UDP"!=tmp_record[6].split(",")[0] and 
+		"ip-proto"!=tmp_record[6][0:8]):
+			continue
 		
 		#==================================analyze network flow data=============================================
 		#get current request record time 
 		#flowtime = tmp_record[0][:-7]
 		currtime = datetime.datetime.strptime(tmp_record[0][:-7], "%H:%M:%S")
 		flowpath=tmp_record[2]+">"+tmp_record[4]
-		scanport=tmp_record[5]
+		if("ip-proto"==tmp_record[6].split()[0][0:8]):
+			scantype="IP Protocol"
+			#Add scaned IP ptotocol number
+			scanport=tmp_record[6].split()[0][9:]
+		else:
+			scantype="Port"
+			#Add scaned port number
+			scanport=tmp_record[5]
+		
+		#clear list
 		ls_flowdata=[]
 		ls_scanport=[]
 		
@@ -230,7 +245,7 @@ def HandleInfo(ls_info):
 				#get previous scan time to compare with 'currtime'
 				pretime=datetime.datetime.strptime(ls_flowdata[3], "%H:%M:%S")
 				diff=("%f\n" %((currtime-pretime).total_seconds()))
-				#print("Curr:%s\tPre:%s\tDiff:%s" %(tmp_record[0][:-7], ls_flowdata[3],diff))
+				
 				#if diff between current time and previous time is large than threshold, it could be new scan activity
 				if(float(diff) <= 5.0):					
 					#set flow exist flag for skiping 2) operation
@@ -242,7 +257,6 @@ def HandleInfo(ls_info):
 			#get scan port data from ls_flowdata
 			ls_scanport=ls_flowdata[2]
 	
-			#print(ls_flows.index(ls_flowdata))
 			#check current scan port whether is existed in ls_scanport[]
 			if(scanport not in ls_scanport):
 				#add new scan port to flow record
@@ -263,11 +277,11 @@ def HandleInfo(ls_info):
 		ls_flowdata.append(ls_scanport)	
 		#Add current scan time
 		ls_flowdata.append(tmp_record[0][:-7])
+		#Add scan type
+		ls_flowdata.append(scantype)
+		
 		#add scan record to ls_flows[] list
 		ls_flows.append(ls_flowdata)
-		
-		#update previous scan time
-		#pretime=currtime
 	
 	#return statistics result
 	return ls_flows;
@@ -287,7 +301,6 @@ def ScanDetect(ls_netflows):
 		ls_scandata=[]
 		#check scaned port number threshold
 		if(len(ls_scanport)>3):
-			#print(len(ls_scanport))
 			#add scan activity time
 			ls_scandata.append(tmp_record[0])
 			#add scan path scr->des
@@ -296,8 +309,10 @@ def ScanDetect(ls_netflows):
 			ls_scandata.append(tmp_record[3])
 			#add scaned port number
 			ls_scandata.append(len(ls_scanport))
+			#add scaned port type
+			ls_scandata.append(tmp_record[4])
 			
-			#add ls_scandata to ls_scanflows[]
+			#=====add ls_scandata to ls_scanflows[]=====
 			ls_scanflows.append(ls_scandata)
 	return ls_scanflows
 
@@ -326,10 +341,10 @@ def ExportResult(ls_record,filename):
 		#print("%s->" %(ls_logdata[0]))	
 		tmp_file.write("%s->\n" %(ls_logdata[0]))
 		for ls_scan in ls_logdata[1]:
-			'''print("\tScanned from %s to %s, start at:%s, end at:%s" 
+			'''print("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s ports" 
 			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))'''
-			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s ports\n" 
-			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3]))
+			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s\n" 
+			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3],ls_scan[4]))
 		#print("")
 		tmp_file.write("\n")
 	tmp_file.close() 
@@ -363,9 +378,8 @@ def main():
 	#define regex_str to filter scanlog files
 	regex_str=sys.argv[1]
 	
-	#logname="tcpdump_sample"
 	#reportname="networkreport.txt"
-	portscan="portscanreport.txt"
+	#portscan="portscanreport.txt"
 	detectname="detectreport.txt"
 	
 	ls_scandetect=[]

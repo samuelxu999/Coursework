@@ -371,12 +371,13 @@ Function: used as main for executing function and export test result
 '''
 def main(): 
     #Check argument validation
-	if(len(sys.argv)<2):
+	'''if(len(sys.argv)<2):
 		print("Usage: %s @regex\nExample:%s tcpdump*.txt" %(sys.argv[0],sys.argv[0]))
 		return -1
-	
+	'''
 	#define regex_str to filter scanlog files
-	regex_str=sys.argv[1]
+	#regex_str=sys.argv[1]	
+	regex_str="*.log"
 	
 	#reportname="networkreport.txt"
 	#portscan="portscanreport.txt"

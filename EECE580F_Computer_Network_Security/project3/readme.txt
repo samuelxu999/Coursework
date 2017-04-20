@@ -3,7 +3,7 @@ Task1: detect if there is some scanning activity on your network by sequentially
 Src: All required source code,configuration and data are in ./
 
 Function: 
-By executing `./scanproject.py "*.log"` could read tcpdump log files, analyze network flows and export detect scan result as "detectreport.txt"
+By executing `./scanproject.py ` could read all *.log files, analyze network flows and export detect scan result as "detectreport.txt"
 
 Report sample:
 	tcpdump_scan_all.log->

@@ -338,11 +338,11 @@ def ExportResult(ls_record,filename):
 	tmp_file = open(filename, "w") 
 	for ls_logdata in ls_record:
 		#tmp_file.write("%s\n" %(ls_data))
-		#print("%s->" %(ls_logdata[0]))	
+		print("\n%s->" %(ls_logdata[0]))	
 		tmp_file.write("%s->\n" %(ls_logdata[0]))
 		for ls_scan in ls_logdata[1]:
-			'''print("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s ports" 
-			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2]))'''
+			print("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s" 
+			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3],ls_scan[4]))
 			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s\n" 
 			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3],ls_scan[4]))
 		#print("")

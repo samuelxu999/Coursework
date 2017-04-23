@@ -247,7 +247,7 @@ def HandleInfo(ls_info):
 				diff=("%f\n" %((currtime-pretime).total_seconds()))
 				
 				#if diff between current time and previous time is large than threshold, it could be new scan activity
-				if(float(diff) <= 5.0):					
+				if(float(diff) <= 10.0):					
 					#set flow exist flag for skiping 2) operation
 					isflowexist=1
 					break
@@ -300,7 +300,7 @@ def ScanDetect(ls_netflows):
 		ls_scanport=tmp_record[2]
 		ls_scandata=[]
 		#check scaned port number threshold
-		if(len(ls_scanport)>3):
+		if(len(ls_scanport)>10):
 			#add scan activity time
 			ls_scandata.append(tmp_record[0])
 			#add scan path scr->des

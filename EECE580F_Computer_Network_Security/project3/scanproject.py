@@ -99,11 +99,15 @@ def ARP_Parse(ls_record):
 	if("Request"==tmp_data[0]):
 		#who-has IP
 		ls_data.append(tmp_data[2])
-		#tell
-		if("tell"==tmp_data[3]):
-			ls_data.append(tmp_data[4])
-		else:
+		#Classify flow based on Broadcast or Normal ARP request
+		if("Broadcast"==tmp_data[3][1:-1]):
 			ls_data.append(tmp_data[5])
+			#Add activity type-Broadcast
+			ls_data.append("Broadcast")
+		else:
+			ls_data.append(tmp_data[4])
+			#Add activity type-Normal
+			ls_data.append("Normal")
 	#Reply handler
 	if("Reply"==tmp_data[0]):
 		#reply IP
@@ -123,7 +127,6 @@ def ARP_Parse(ls_record):
 		str_data=str_data+tmp_data[i]+" "
 		i+=1
 	ls_data.append(str_data[:-1])
-	
 	return ls_data
  
 '''
@@ -188,100 +191,125 @@ def HandleInfo(ls_info):
 	
 	#for each flow record in ls_info
 	for tmp_record in ls_info:
-		#=================================pre-operation to filter unconcerning record==========================
-		#only analyze IP flow
-		if("IP"!=tmp_record[1]):
-			continue
+		#============================================================================================
+		#++++++++++++++++++++++++++++++ ARP information extraction handler ++++++++++++++++++++++++++
+		#============================================================================================
+		if("ARP"==tmp_record[1]):
+			if("Request"!=tmp_record[2] or "Broadcast"!=tmp_record[5]):
+				continue
+			#------new scan flow record vie sn/sP --------------
+			ls_flowdata=[]
+			#Add scan activity flow type-ARP
+			ls_flowdata.append(tmp_record[1])
+			#Add scan activity start time
+			ls_flowdata.append(tmp_record[0][:-7])
+			#Add scan path: src
+			ls_flowdata.append(tmp_record[4])
+			#Add scan path: des
+			ls_flowdata.append(tmp_record[3])
+			#Add scan type-Broadcast
+			ls_flowdata.append(tmp_record[5])
 		
-		#remove flows whose port is in following filter
-		if(("netbios-ns"==tmp_record[3]) or ("domain"==tmp_record[3]) or ("bootpc"==tmp_record[3]) or
-			("netbios-ns"==tmp_record[5]) or ("domain"==tmp_record[5]) or("bootpc"==tmp_record[5]) ):
-			continue
-		
-		#check if 'ICMP' appear at the first of data section, then remove ICMP flow
-		if("ICMP" in tmp_record[6].split(",")[0]):
-			continue	
-		
-		'''
-		IP protocol:check if 'ip-proto' appear at the first of data section. if yes, go ahead to analyze
-		UDP:check if 'UDP' appear at the first of data section. if yes, go ahead to analyze
-		TCP:check if 'Flags [@]' appear at the first of data section. if yes, go ahead to analyze
-			[S]-sS, [F]-sF, [none]-sN, [FPU]-sX
-		'''
-		if("Flags [S]"!=tmp_record[6].split(",")[0] and 
-		"Flags [F]"!=tmp_record[6].split(",")[0] and 
-		"Flags [none]"!=tmp_record[6].split(",")[0] and 
-		"Flags [FPU]"!=tmp_record[6].split(",")[0] and 
-		"UDP"!=tmp_record[6].split(",")[0] and 
-		"ip-proto"!=tmp_record[6][0:8]):
-			continue
-		
-		#==================================analyze network flow data=============================================
-		#get current request record time 
-		#flowtime = tmp_record[0][:-7]
-		currtime = datetime.datetime.strptime(tmp_record[0][:-7], "%H:%M:%S")
-		flowpath=tmp_record[2]+">"+tmp_record[4]
-		if("ip-proto"==tmp_record[6].split()[0][0:8]):
-			scantype="IP Protocol"
-			#Add scaned IP ptotocol number
-			scanport=tmp_record[6].split()[0][9:]
+		#===========================================================================================
+		#++++++++++++++++++++++++++++++ IP information extraction handler ++++++++++++++++++++++++++
+		#===========================================================================================
 		else:
-			scantype="Port"
-			#Add scaned port number
-			scanport=tmp_record[5]
+			#only analyze IP flow
+			if("IP"!=tmp_record[1]):
+				continue
+			
+			#remove flows whose port is in following filter
+			if(("netbios-ns"==tmp_record[3]) or ("domain"==tmp_record[3]) or ("bootpc"==tmp_record[3]) or
+				("netbios-ns"==tmp_record[5]) or ("domain"==tmp_record[5]) or("bootpc"==tmp_record[5]) ):
+				continue
+			
+			#check if 'ICMP' appear at the first of data section, then remove ICMP flow
+			if("ICMP" in tmp_record[6].split(",")[0]):
+				continue	
+			
+			'''
+			IP protocol:check if 'ip-proto' appear at the first of data section. if yes, go ahead to analyze
+			UDP:check if 'UDP' appear at the first of data section. if yes, go ahead to analyze
+			TCP:check if 'Flags [@]' appear at the first of data section. if yes, go ahead to analyze
+				[S]-sS, [F]-sF, [none]-sN, [FPU]-sX
+			'''
+			if("Flags [S]"!=tmp_record[6].split(",")[0] and 
+			"Flags [F]"!=tmp_record[6].split(",")[0] and 
+			"Flags [none]"!=tmp_record[6].split(",")[0] and 
+			"Flags [FPU]"!=tmp_record[6].split(",")[0] and 
+			"UDP"!=tmp_record[6].split(",")[0] and 
+			"ip-proto"!=tmp_record[6][0:8]):
+				continue
+			
+			#++++++++++++++++++++++++++++analyze IP network flow data++++++++++++++++++++++++
+			#get current request record time 
+			#flowtime = tmp_record[0][:-7]
+			currtime = datetime.datetime.strptime(tmp_record[0][:-7], "%H:%M:%S")
+			flowpath=tmp_record[2]+">"+tmp_record[4]
+			if("ip-proto"==tmp_record[6].split()[0][0:8]):
+				scantype="IP Protocol"
+				#Add scaned IP ptotocol number
+				scanport=tmp_record[6].split()[0][9:]
+			else:
+				scantype="Port"
+				#Add scaned port number
+				scanport=tmp_record[5]
+			
+			#clear list
+			ls_flowdata=[]
+			ls_scanport=[]
+			
+			isflowexist=0
+			#-------------------1)if ls_flows[] is not empty---------------------
+			for tmp_flow in ls_flows:			
+				#check whether a exist scan flow
+				if(flowpath in tmp_flow):
+					#get exist flow data to check scan port status
+					ls_flowdata=tmp_flow
+					
+					#get previous scan time to compare with 'currtime'
+					pretime=datetime.datetime.strptime(ls_flowdata[4], "%H:%M:%S")
+					diff=("%f\n" %((currtime-pretime).total_seconds()))
+					
+					#if diff between current time and previous time is large than threshold, it could be new scan activity
+					if(float(diff) <= 10.0):					
+						#set flow exist flag for skiping 2) operation
+						isflowexist=1
+						break
+			
+			#if scan flow is existed
+			if(isflowexist==1):
+				#get scan port data from ls_flowdata
+				ls_scanport=ls_flowdata[3]
 		
-		#clear list
-		ls_flowdata=[]
-		ls_scanport=[]
-		
-		isflowexist=0
-		#-------------------1)if ls_flows[] is not empty---------------------
-		for tmp_flow in ls_flows:			
-			#check whether a exist scan flow
-			if(flowpath in tmp_flow):
-				#get exist flow data to check scan port status
-				ls_flowdata=tmp_flow
-				
-				#get previous scan time to compare with 'currtime'
-				pretime=datetime.datetime.strptime(ls_flowdata[3], "%H:%M:%S")
-				diff=("%f\n" %((currtime-pretime).total_seconds()))
-				
-				#if diff between current time and previous time is large than threshold, it could be new scan activity
-				if(float(diff) <= 10.0):					
-					#set flow exist flag for skiping 2) operation
-					isflowexist=1
-					break
-		
-		#if scan flow is existed
-		if(isflowexist==1):
-			#get scan port data from ls_flowdata
-			ls_scanport=ls_flowdata[2]
-	
-			#check current scan port whether is existed in ls_scanport[]
-			if(scanport not in ls_scanport):
-				#add new scan port to flow record
-				ls_scanport.append(scanport)
-			#update scan time history
-			ls_flowdata[3]=tmp_record[0][:-7]
-			#skip the condition 2)
-			continue
-		
-		#------2)if ls_flows[] is empty, or new flow record appear--------------
-		ls_flowdata=[]
-		#Add scan activity start time
-		ls_flowdata.append(tmp_record[0][:-7])
-		#Add scan path: src->des
-		ls_flowdata.append(flowpath)
-		#Add scan port: des port number-scan count
-		ls_scanport.append(scanport)
-		ls_flowdata.append(ls_scanport)	
-		#Add current scan time
-		ls_flowdata.append(tmp_record[0][:-7])
-		#Add scan type
-		ls_flowdata.append(scantype)
+				#check current scan port whether is existed in ls_scanport[]
+				if(scanport not in ls_scanport):
+					#add new scan port to flow record
+					ls_scanport.append(scanport)
+				#update scan time history
+				ls_flowdata[4]=tmp_record[0][:-7]
+				#skip the condition 2)
+				continue
+			
+			#------2)if ls_flows[] is empty, or new flow record appear--------------
+			ls_flowdata=[]
+			#Add scan activity flow type-IP
+			ls_flowdata.append(tmp_record[1])
+			#Add scan activity start time
+			ls_flowdata.append(tmp_record[0][:-7])
+			#Add scan path: src->des
+			ls_flowdata.append(flowpath)
+			#Add scan port: des port number-scan count
+			ls_scanport.append(scanport)
+			ls_flowdata.append(ls_scanport)	
+			#Add current scan time
+			ls_flowdata.append(tmp_record[0][:-7])
+			#Add scan type
+			ls_flowdata.append(scantype)
 		
 		#add scan record to ls_flows[] list
-		ls_flows.append(ls_flowdata)
+		if(0!=len(ls_flowdata)):
+			ls_flows.append(ls_flowdata)
 	
 	#return statistics result
 	return ls_flows;
@@ -296,23 +324,41 @@ def ScanDetect(ls_netflows):
 	ls_scanflows=[]
 	#for each flow record in ls_info
 	for tmp_record in ls_netflows:
-		#check whether scaned port count is beyong normal network activity
-		ls_scanport=tmp_record[2]
-		ls_scandata=[]
-		#check scaned port number threshold
-		if(len(ls_scanport)>10):
-			#add scan activity time
+		#Add ARP Broadcast flow to scanned activity.
+		if("ARP"==tmp_record[0]):
+			ls_scandata=[]
+			#add flow type-ARP
 			ls_scandata.append(tmp_record[0])
-			#add scan path scr->des
+			#add scan activity time
 			ls_scandata.append(tmp_record[1])
+			#add scan path scr->des
+			ls_scandata.append(tmp_record[2])
 			#add last scan time
 			ls_scandata.append(tmp_record[3])
-			#add scaned port number
-			ls_scandata.append(len(ls_scanport))
 			#add scaned port type
 			ls_scandata.append(tmp_record[4])
+		#Add IP flow which scanned port count beyond threshod scanned activity.
+		else:
+			#check whether scaned port count is beyong normal network activity
+			ls_scanport=tmp_record[3]
+			ls_scandata=[]
+			#check scaned port number threshold
+			if(len(ls_scanport)>10):
+				#add flow type-TCP
+				ls_scandata.append(tmp_record[0])
+				#add scan activity time
+				ls_scandata.append(tmp_record[1])
+				#add scan path scr->des
+				ls_scandata.append(tmp_record[2])
+				#add last scan time
+				ls_scandata.append(tmp_record[4])
+				#add scaned port number
+				ls_scandata.append(len(ls_scanport))
+				#add scaned port type
+				ls_scandata.append(tmp_record[5])
 			
-			#=====add ls_scandata to ls_scanflows[]=====
+		#=====add ls_scandata to ls_scanflows[]=====
+		if(0!=len(ls_scandata)):
 			ls_scanflows.append(ls_scandata)
 	return ls_scanflows
 
@@ -340,11 +386,18 @@ def ExportResult(ls_record,filename):
 		#tmp_file.write("%s\n" %(ls_data))
 		print("\n%s->" %(ls_logdata[0]))	
 		tmp_file.write("%s->\n" %(ls_logdata[0]))
+		#print out detect scan record
 		for ls_scan in ls_logdata[1]:
-			print("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s" 
-			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3],ls_scan[4]))
-			tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s\n" 
-			%(ls_scan[1].split('>')[0],ls_scan[1].split('>')[1],ls_scan[0],ls_scan[2],ls_scan[3],ls_scan[4]))
+			if("IP"==ls_scan[0]):
+				print("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s" 
+				%(ls_scan[2].split('>')[0],ls_scan[2].split('>')[1],ls_scan[1],ls_scan[3],ls_scan[4],ls_scan[5]))
+				tmp_file.write("\tScanned from %s to %s, start at:%s, end at:%s, scanned %s %s\n" 
+				%(ls_scan[2].split('>')[0],ls_scan[2].split('>')[1],ls_scan[1],ls_scan[3],ls_scan[4],ls_scan[5]))
+			else:				
+				print("\tScanned from %s to %s, start at:%s, scanned %s-%s" 
+				%(ls_scan[2],ls_scan[3],ls_scan[1],ls_scan[0],ls_scan[4]))
+				tmp_file.write("\tScanned from %s to %s, start at:%s, scanned %s-%s\n" 
+				%(ls_scan[2],ls_scan[3],ls_scan[1],ls_scan[0],ls_scan[4]))
 		#print("")
 		tmp_file.write("\n")
 	tmp_file.close() 
@@ -381,7 +434,7 @@ def main():
 	
 	#reportname="networkreport.txt"
 	#portscan="portscanreport.txt"
-	detectname="detectreport.txt"
+	detectname="report.txt"
 	
 	ls_scandetect=[]
 	

@@ -46,5 +46,10 @@ scan log description:
 	--tcpdump_scan_all.txt: 	contains all above scan activity related flows as well as normal Internet browsing traffic
 								it test for different scan activity messed with normal Internet browsing traffic 
 								
+	--tcpdump_scan_sP.txt: 		contains "nmap -sP" scan activity related flows
+								detect method: For thoes ARP flows, check whether "Broadcast" appear at the request packet
+								
+	--tcpdump_scan_s_n.txt: 	contains "nmap -sn" scan activity related flows
+								detect method: For thoes ARP flows, check whether "Broadcast" appear at the request packet
 
 								
